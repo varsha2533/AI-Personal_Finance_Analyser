@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, ConfigDict
 from typing import Optional, List
 from datetime import datetime
 
@@ -14,8 +14,7 @@ class ExplanationRead(ExplanationBase):
     transaction_id: int = Field(..., example=1)
     created_at: datetime = Field(..., example="2024-06-01T12:00:00Z")
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class AnomalyBase(BaseModel):
     anomaly_score: float = Field(..., description="Anomaly score", example=0.95)
@@ -29,8 +28,7 @@ class AnomalyRead(AnomalyBase):
     transaction_id: int = Field(..., example=1)
     created_at: datetime = Field(..., example="2024-06-01T12:00:00Z")
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class FeedbackBase(BaseModel):
     feedback_text: str = Field(..., description="User feedback text", example="This is not an anomaly.")
@@ -44,8 +42,7 @@ class FeedbackRead(FeedbackBase):
     transaction_id: int = Field(..., example=1)
     created_at: datetime = Field(..., example="2024-06-01T12:00:00Z")
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class TransactionBase(BaseModel):
     user_id: int = Field(..., description="ID of the user", example=1)
@@ -54,6 +51,7 @@ class TransactionBase(BaseModel):
 
 class TransactionCreate(TransactionBase):
     @validator('category')
+    @classmethod
     def category_whitelist(cls, v):
         allowed = {"Groceries", "Utilities", "Rent", "Dining", "Travel"}
         if v not in allowed:
@@ -67,6 +65,5 @@ class TransactionRead(TransactionBase):
     anomalies: List[AnomalyRead] = Field(default_factory=list, description="List of anomalies")
     feedbacks: List[FeedbackRead] = Field(default_factory=list, description="List of feedbacks")
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 

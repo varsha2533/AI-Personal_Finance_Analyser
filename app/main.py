@@ -160,9 +160,12 @@ def list_feedbacks(
 
 @app.get("/", tags=["Root"], response_description="API welcome message")
 def read_root():
-    
+    """API root endpoint with welcome message."""
     return {
-        "message": "Working"
+        "message": "AI Personal Finance Analyzer API is running",
+        "version": "1.0",
+        "docs": "/docs",
+        "health": "/health"
     }
 
 # ---
